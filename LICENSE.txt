@@ -1,0 +1,11 @@
+Copyright (c) 2026 Simon Addai Boakye
+
+All rights reserved.
+
+This software and associated documentation files (the "Software") are proprietary to Simon Addai Boakye. 
+Unauthorized copying, modification, distribution, or use of the Software, in whole or in part, is strictly prohibited.
+
+Permission is hereby granted to William Bonac Fitness Temple staff and authorized users to use the Software 
+for gym management purposes only.
+
+Any other use, reproduction, or distribution requires prior written consent from Simon Addai Boakye.
