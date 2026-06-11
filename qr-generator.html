@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WBFT - Generate QR Codes</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Lato', sans-serif;
+      background: #f0f0f0;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+
+    header {
+      background: #0b3d91;
+      color: #d4af37;
+      padding: 20px;
+      border-radius: 8px;
+      margin-bottom: 30px;
+      text-align: center;
+    }
+
+    header h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: 28px;
+      letter-spacing: 2px;
+    }
+
+    .content {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    section {
+      background: white;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    section h2 {
+      color: #0b3d91;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 2px solid #d4af37;
+    }
+
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    label {
+      font-weight: 600;
+      color: #0b3d91;
+    }
+
+    input, select {
+      padding: 10px;
+      border: 2px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: #d4af37;
+      box-shadow: 0 0 8px rgba(212, 175, 55, 0.3);
+    }
+
+    button {
+      background: #d4af37;
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.3s ease;
+    }
+
+    button:hover {
+      background: #c9a227;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3);
+    }
+
+    .qr-display {
+      text-align: center;
+      padding: 20px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      margin-top: 15px;
+    }
+
+    .qr-display img {
+      max-width: 300px;
+      border: 2px solid #d4af37;
+      padding: 10px;
+      background: white;
+    }
+
+    .qr-info {
+      margin-top: 15px;
+      font-size: 13px;
+      color: #666;
+    }
+
+    .clients-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 15px;
+      margin-top: 20px;
+    }
+
+    .client-qr-card {
+      background: white;
+      border: 2px solid #ddd;
+      border-radius: 8px;
+      padding: 15px;
+      text-align: center;
+      transition: all 0.3s ease;
+    }
+
+    .client-qr-card:hover {
+      border-color: #d4af37;
+      box-shadow: 0 4px 10px rgba(212, 175, 55, 0.3);
+    }
+
+    .client-qr-card h4 {
+      color: #0b3d91;
+      margin: 10px 0;
+      font-size: 14px;
+    }
+
+    .client-qr-card img {
+      width: 150px;
+      height: 150px;
+      border: 1px solid #ddd;
+      padding: 5px;
+    }
+
+    .client-qr-card p {
+      font-size: 12px;
+      color: #666;
+      margin: 8px 0 0 0;
+    }
+
+    .btn-print {
+      background: #2196f3;
+      font-size: 12px;
+      padding: 8px 12px;
+      margin-top: 10px;
+      width: 100%;
+    }
+
+    .btn-print:hover {
+      background: #1976d2;
+    }
+
+    .message {
+      padding: 15px;
+      border-radius: 4px;
+      margin-top: 15px;
+      font-weight: bold;
+      text-align: center;
+    }
+
+    .message.success {
+      background: #f1f8f4;
+      color: #2e7d32;
+      border: 1px solid #4caf50;
+    }
+
+    .message.error {
+      background: #fdf1f1;
+      color: #c62828;
+      border: 1px solid #d32f2f;
+    }
+
+    @media (max-width: 768px) {
+      .content {
+        grid-template-columns: 1fr;
+      }
+
+      .clients-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      }
+    }
+  </style>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+</head>
+
+<body>
+  <div class="container">
+    <header>
+      <h1>🎯 QR Code Generator</h1>
+      <p>Generate QR codes for gym clients</p>
+    </header>
+
+    <div class="content">
+      <!-- Single QR Generator -->
+      <section>
+        <h2>📱 Generate Single QR Code</h2>
+        <form id="singleQRForm">
+          <label>Select Client:</label>
+          <select id="clientSelect" required>
+            <option value="">-- Choose a client --</option>
+          </select>
+          <button type="submit">Generate QR Code</button>
+        </form>
+        <div id="singleQRDisplay" class="qr-display" style="display:none;">
+          <div id="singleQRCode"></div>
+          <div class="qr-info">
+            <p id="qrInfo"></p>
+            <button class="btn-print" onclick="printSingleQR()">🖨️ Print</button>
+          </div>
+        </div>
+        <div id="message" class="message" style="display:none;"></div>
+      </section>
+
+      <!-- Bulk QR Generator -->
+      <section>
+        <h2>📊 Generate Bulk QR Codes</h2>
+        <form id="bulkQRForm">
+          <button type="submit">Generate QR for All Clients</button>
+        </form>
+        <div id="bulkMessage" class="message" style="display:none;"></div>
+        <div id="clientsGrid" class="clients-grid"></div>
+      </section>
+    </div>
+  </div>
+
+  <script>
+    // Get client database
+    let clientDatabase = JSON.parse(localStorage.getItem('clientDatabase')) || [];
+
+    document.addEventListener('DOMContentLoaded', function() {
+      loadClientSelect();
+      setupEventListeners();
+    });
+
+    function loadClientSelect() {
+      const select = document.getElementById('clientSelect');
+      select.innerHTML = '<option value="">-- Choose a client --</option>';
+      
+      clientDatabase.forEach(client => {
+        const option = document.createElement('option');
+        option.value = client.id;
+        option.textContent = client.name;
+        select.appendChild(option);
+      });
+    }
+
+    function setupEventListeners() {
+      document.getElementById('singleQRForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        const clientId = document.getElementById('clientSelect').value;
+        generateSingleQR(parseInt(clientId));
+      });
+
+      document.getElementById('bulkQRForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        generateBulkQR();
+      });
+    }
+
+    function generateSingleQR(clientId) {
+      const client = clientDatabase.find(c => c.id === clientId);
+      if (!client) {
+        showMessage('error', 'Client not found');
+        return;
+      }
+
+      // QR data: clientID:clientName
+      const qrData = `${client.id}:${client.name}`;
+
+      // Clear previous QR
+      const qrContainer = document.getElementById('singleQRCode');
+      qrContainer.innerHTML = '';
+
+      // Generate new QR
+      new QRCode(qrContainer, {
+        text: qrData,
+        width: 300,
+        height: 300,
+        colorDark: '#0b3d91',
+        colorLight: '#ffffff',
+        correctLevel: QRCode.CorrectLevel.H
+      });
+
+      document.getElementById('qrInfo').innerHTML = `
+        <strong>${client.name}</strong><br>
+        Membership: ${client.membership}<br>
+        Expiry: ${client.expiryDate}
+      `;
+
+      document.getElementById('singleQRDisplay').style.display = 'block';
+      showMessage('success', `✅ QR code generated for ${client.name}`);
+    }
+
+    function generateBulkQR() {
+      if (clientDatabase.length === 0) {
+        showMessage('error', 'No clients found', 'bulkMessage');
+        return;
+      }
+
+      const grid = document.getElementById('clientsGrid');
+      grid.innerHTML = '';
+
+      clientDatabase.forEach(client => {
+        const qrData = `${client.id}:${client.name}`;
+        const card = document.createElement('div');
+        card.className = 'client-qr-card';
+        card.innerHTML = `
+          <h4>${client.name}</h4>
+          <div id="qr-${client.id}" class="qr-container"></div>
+          <p>${client.membership}</p>
+          <p>Exp: ${client.expiryDate}</p>
+          <button class="btn-print" onclick="printClientQR(${client.id}, '${client.name}')">🖨️ Print</button>
+        `;
+        grid.appendChild(card);
+
+        // Generate QR for this client
+        new QRCode(document.getElementById(`qr-${client.id}`), {
+          text: qrData,
+          width: 150,
+          height: 150,
+          colorDark: '#0b3d91',
+          colorLight: '#ffffff',
+          correctLevel: QRCode.CorrectLevel.H
+        });
+      });
+
+      showMessage('success', `✅ Generated QR codes for ${clientDatabase.length} clients`, 'bulkMessage');
+    }
+
+    function printSingleQR() {
+      const printWindow = window.open('', 'PRINT', 'height=600,width=800');
+      const qrImage = document.getElementById('singleQRCode').innerHTML;
+      const clientName = document.getElementById('qrInfo').innerHTML;
+      
+      printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            body { text-align: center; padding: 20px; font-family: Arial; }
+            h2 { color: #0b3d91; }
+            .qr { margin: 20px 0; }
+            .info { font-size: 14px; margin: 20px 0; }
+          </style>
+        </head>
+        <body>
+          <h2>WBFT Gym ID Card</h2>
+          <div class="qr">${qrImage}</div>
+          <div class="info">${clientName}</div>
+        </body>
+        </html>
+      `);
+      printWindow.document.close();
+      setTimeout(() => printWindow.print(), 250);
+    }
+
+    function printClientQR(clientId, clientName) {
+      const client = clientDatabase.find(c => c.id === clientId);
+      if (!client) return;
+
+      const qrImage = document.getElementById(`qr-${clientId}`).innerHTML;
+      const printWindow = window.open('', 'PRINT', 'height=400,width=600');
+      
+      printWindow.document.write(`
+        <!DOCTYPE html>
+        <html>
+        <head>
+          <style>
+            body { text-align: center; padding: 20px; font-family: Arial; }
+            h2 { color: #0b3d91; margin: 0 0 20px 0; }
+            .qr { margin: 20px 0; }
+            .info { font-size: 12px; margin: 20px 0; color: #666; }
+            .footer { font-size: 10px; margin-top: 30px; color: #999; }
+          </style>
+        </head>
+        <body>
+          <h2>WBFT GYM ID</h2>
+          <div class="qr">${qrImage}</div>
+          <div class="info">
+            <p><strong>${client.name}</strong></p>
+            <p>${client.phone}</p>
+            <p>Membership: ${client.membership}</p>
+            <p>Valid Until: ${client.expiryDate}</p>
+          </div>
+          <div class="footer">Scan this QR code at entrance</div>
+        </body>
+        </html>
+      `);
+      printWindow.document.close();
+      setTimeout(() => printWindow.print(), 250);
+    }
+
+    function showMessage(type, text, elementId = 'message') {
+      const msgEl = document.getElementById(elementId);
+      msgEl.className = `message ${type}`;
+      msgEl.innerText = text;
+      msgEl.style.display = 'block';
+      
+      setTimeout(() => {
+        msgEl.style.display = 'none';
+      }, 5000);
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>WBFT Entrance Portal</title>
+  <link rel="stylesheet" href="entrance-style.css">
+  <script src="entrance-script.js" defer></script>
+  <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.js"></script>
+  <link rel="manifest" href="manifest.json">
+  <meta name="theme-color" content="#d4af37">
+</head>
+
+<body>
+  <!-- Header -->
+  <header class="entrance-header">
+    <div class="header-content">
+      <h1>🚪 ENTRANCE CONTROL</h1>
+      <p>WILLIAM BONAC FITNESS TEMPLE</p>
+    </div>
+    <div class="header-time">
+      <span id="currentTime"></span>
+    </div>
+  </header>
+
+  <!-- Main Container -->
+  <div class="entrance-container">
+    <!-- Left Side: QR Scanner & Manual Entry -->
+    <div class="entrance-left">
+      <section class="scanner-section">
+        <h2>📱 QR Code Scanner</h2>
+        
+        <!-- Camera Feed -->
+        <div class="camera-container">
+          <video id="scanner" class="scanner-feed"></video>
+          <canvas id="canvas" style="display:none;"></canvas>
+          <div class="scanner-overlay">
+            <div class="scanner-frame"></div>
+          </div>
+        </div>
+
+        <!-- Scanner Controls -->
+        <div class="scanner-controls">
+          <button id="startScanner" class="btn-scan btn-active">📷 Start Scanner</button>
+          <button id="stopScanner" class="btn-scan" style="display:none;">⏹️ Stop Scanner</button>
+        </div>
+
+        <!-- Scanned Result -->
+        <div id="scanResult" class="scan-result"></div>
+      </section>
+
+      <!-- Manual Entry Fallback -->
+      <section class="manual-entry-section">
+        <h2>⌨️ Manual Entry</h2>
+        <form id="manualEntryForm">
+          <label>Client Name:</label>
+          <input type="text" id="manualClientName" placeholder="Enter client name" required>
+          <button type="submit" class="btn-scan btn-gold">✓ Process Entry</button>
+        </form>
+        <p id="manualMessage" class="message"></p>
+      </section>
+    </div>
+
+    <!-- Right Side: Live Dashboard -->
+    <div class="entrance-right">
+      <section class="dashboard-section">
+        <h2>📊 Entrance Dashboard</h2>
+        
+        <!-- Statistics Cards -->
+        <div class="stats-container">
+          <div class="stat-card">
+            <div class="stat-icon">📈</div>
+            <div class="stat-content">
+              <p class="stat-label">Total Entries Today</p>
+              <p class="stat-value" id="totalEntries">0</p>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-content">
+              <p class="stat-label">Currently Inside</p>
+              <p class="stat-value" id="currentlyInside">0</p>
+            </div>
+          </div>
+
+          <div class="stat-card">
+            <div class="stat-icon">⏰</div>
+            <div class="stat-content">
+              <p class="stat-label">Avg Duration</p>
+              <p class="stat-value" id="avgDuration">-</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Time-Based Analytics -->
+        <div class="analytics-section">
+          <h3>⏱️ Hourly Analytics</h3>
+          <div id="hourlyChart" class="hourly-chart"></div>
+        </div>
+
+        <!-- Recent Entries Log -->
+        <div class="log-section">
+          <h3>📋 Recent Entries (Last 10)</h3>
+          <div id="entriesLog" class="entries-log">
+            <p class="no-data">No entries yet today</p>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <!-- Entry Popup (Full Screen Feedback) -->
+  <div id="entryPopup" class="entry-popup" style="display:none;">
+    <div class="popup-content">
+      <div id="popupBody" class="popup-body"></div>
+      <button id="closePopup" class="btn-popup">Close</button>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <footer class="entrance-footer">
+    <p>© 2026 WILLIAM BONAC FITNESS TEMPLE — Entrance Control System</p>
+  </footer>
+
+  <script>
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker.register("service-worker.js")
+        .then(() => console.log("Service Worker registered"));
+    }
+  </script>
+</body>
+</html>
