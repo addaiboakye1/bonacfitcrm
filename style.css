@@ -1,0 +1,21 @@
+body {
+  font-family: 'Lato', sans-serif;
+  background: #f9f9f9;
+}
+h1, h2 {
+  font-family: 'Playfair Display', serif;
+  color: #0b3d91;
+}
+.btn-gold {
+  background: #d4af37;
+  color: #fff;
+  border: none;
+  padding: 10px 20px;
+  border-radius: 5px;
+}
+footer {
+  text-align: center;
+  padding: 10px;
+  background: #0b3d91;
+  color: #fff;
+}

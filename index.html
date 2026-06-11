@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>WILLIAM BONAC FITNESS TEMPLE</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#d4af37">
+<head>
+  <meta charset="UTF-8">
+  <title>WILLIAM BONAC FITNESS TEMPLE</title>
+
+  <!-- Apple Touch Icon (iOS) -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <!-- Favicons (Browsers) -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#d4af37">
+<head>
+  <meta charset="UTF-8">
+  <title>WILLIAM BONAC FITNESS TEMPLE</title>
+
+  <!-- Apple Touch Icon (iOS) -->
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+
+  <!-- Favicons (Browsers) -->
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="/manifest.json">
+  <meta name="theme-color" content="#d4af37">
+</head>
+
+</head>
+
+</head>
+<body>
+  <!-- Login Section -->
+  <section class="login">
+    <h2>Admin Login</h2>
+    <form id="loginForm">
+      <label>Username:</label>
+      <input type="text" id="username" required>
+      <label>Password:</label>
+      <input type="password" id="password" required>
+      <button type="submit" class="btn-gold">Login</button>
+    </form>
+    <p id="loginMessage"></p>
+  </section>
+
+  <!-- CRM Content (hidden until login) -->
+  <div class="crm-content" style="display:none;">
+    <h1>WILLIAM BONAC FITNESS TEMPLE</h1>
+
+    <section class="clients"><h2>Clients</h2></section>
+    <section class="payments"><h2>Payments</h2></section>
+    <section class="attendance"><h2>Attendance</h2></section>
+    <section class="inventory"><h2>Sales & Inventory</h2></section>
+    <section class="revenue-dashboard"><h2>Revenue Dashboard</h2><canvas id="revenueChart"></canvas></section>
+    <section class="reports"><h2>Reports</h2></section>
+    <script>
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker.register("service-worker.js")
+      .then(() => console.log("Service Worker registered"));
+  }
+</script>
+
+  </div>
+
+  <footer>
+    <p>© 2026 WILLIAM BONAC FITNESS TEMPLE — Copyright SIMON ADDAI BOAKYE</p>
+  </footer>
+</body>
+</html>
+<!-- Clients Section -->
+<section class="clients">
+  <h2>Clients</h2>
+  <!-- CSV Import -->
+  <input type="file" id="csvFile" accept=".csv">
+  <button onclick="importCSV()">Import Clients</button>
+
+  <!-- Manual Add -->
+  <form id="clientForm">
+    <label>Name:</label>
+    <input type="text" id="clientName" required>
+    <label>Membership:</label>
+    <select id="membershipType">
+      <option value="registration">Registration (500 GH₵)</option>
+      <option value="monthly">Monthly Renewal (200 GH₵)</option>
+      <option value="3months">3 Months Renewal (500 GH₵)</option>
+      <option value="6months">6 Months Renewal (1000 GH₵)</option>
+      <option value="yearly">Yearly Renewal (2000 GH₵)</option>
+    </select>
+    <label>Payment Method:</label>
+    <select id="paymentMethod">
+      <option value="momo">MoMo</option>
+      <option value="card">Bank Card</option>
+    </select>
+    <button type="submit" class="btn-gold">Add Client</button>
+  </form>
+
+  <!-- Client Table -->
+  <table id="clientTable">
+    <thead>
+      <tr>
+        <th>Name</th>
+        <th>Membership</th>
+        <th>Amount (GH₵)</th>
+        <th>Payment Method</th>
+        <th>Expiry Date</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</section>
+
+<!-- Sales Section -->
+<section class="sales">
+  <h2>Water Sales</h2>
+  <form id="waterForm">
+    <label>Type of Water:</label>
+    <select id="waterType">
+      <option value="small">Small Bottle (3 GH₵)</option>
+      <option value="medium">Medium Bottle (5 GH₵)</option>
+      <option value="large">Large Bottle (8 GH₵)</option>
+    </select>
+    <label>Payment Method:</label>
+    <select id="waterPayment">
+      <option value="momo">MoMo</option>
+      <option value="card">Bank Card</option>
+    </select>
+    <button type="submit" class="btn-gold">Record Sale</button>
+  </form>
+
+  <table id="waterTable">
+    <thead>
+      <tr>
+        <th>Date</th>
+        <th>Type</th>
+        <th>Price (GH₵)</th>
+        <th>Payment Method</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</section>
+
+<!-- Inventory Section -->
+<section class="inventory">
+  <h2>Inventory</h2>
+  <form id="itemForm">
+    <label>Item Name:</label>
+    <input type="text" id="itemName" required>
+    <label>Price (GH₵):</label>
+    <input type="number" id="itemPrice" required>
+    <button type="submit" class="btn-gold">Add Item</button>
+  </form>
+
+  <table id="inventoryTable">
+    <thead>
+      <tr>
+        <th>Item</th>
+        <th>Price (GH₵)</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
+</section>
