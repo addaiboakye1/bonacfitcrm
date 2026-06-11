@@ -38,12 +38,15 @@
         <button type="submit" class="btn-gold">Login</button>
       </form>
       <p id="loginMessage" class="message"></p>
-      <p class="toggle-auth">Don't have an account? <button type="button" id="toggleRegister" class="link-btn">Register as Staff</button></p>
+      <div class="auth-links">
+        <button type="button" id="toggleRegister" class="link-btn">📝 Sign Up as Staff</button>
+        <button type="button" id="toggleResetPassword" class="link-btn">🔑 Forgot Password?</button>
+      </div>
     </section>
 
     <!-- Registration Section -->
     <section id="registerSection" class="auth-section login" style="display:none;">
-      <h2>Staff Registration</h2>
+      <h2>Staff Sign Up</h2>
       <form id="registerForm">
         <label>Full Name:</label>
         <input type="text" id="fullName" required>
@@ -55,16 +58,65 @@
         <input type="password" id="regPassword" required>
         <label>Confirm Password:</label>
         <input type="password" id="confirmPassword" required>
+        <label>Security Question:</label>
+        <select id="securityQuestion" required>
+          <option value="">Select a security question</option>
+          <option value="pet">What is your pet's name?</option>
+          <option value="city">What city were you born in?</option>
+          <option value="school">What was your school name?</option>
+          <option value="color">What is your favorite color?</option>
+        </select>
+        <label>Security Answer:</label>
+        <input type="text" id="securityAnswer" required>
         <label>Role:</label>
         <select id="roleSelect" required>
           <option value="">Select Role</option>
           <option value="staff">Staff Member</option>
           <option value="sales">Sales Representative</option>
         </select>
-        <button type="submit" class="btn-gold">Register</button>
+        <button type="submit" class="btn-gold">Sign Up</button>
       </form>
       <p id="registerMessage" class="message"></p>
       <p class="toggle-auth">Already have an account? <button type="button" id="toggleLogin" class="link-btn">Login</button></p>
+    </section>
+
+    <!-- Password Reset Section -->
+    <section id="resetSection" class="auth-section login" style="display:none;">
+      <h2>Reset Password</h2>
+      <form id="resetPasswordForm">
+        <label>Username:</label>
+        <input type="text" id="resetUsername" required>
+        <label>Email:</label>
+        <input type="email" id="resetEmail" required>
+        <button type="submit" class="btn-gold">Next</button>
+      </form>
+      <p id="resetMessage" class="message"></p>
+      <p class="toggle-auth"><button type="button" id="toggleLoginFromReset" class="link-btn">Back to Login</button></p>
+    </section>
+
+    <!-- Security Question Section -->
+    <section id="securitySection" class="auth-section login" style="display:none;">
+      <h2>Verify Your Identity</h2>
+      <form id="securityForm">
+        <p id="securityQuestionDisplay"></p>
+        <label>Your Answer:</label>
+        <input type="text" id="securityAnswerInput" required>
+        <button type="submit" class="btn-gold">Verify</button>
+      </form>
+      <p id="securityMessage" class="message"></p>
+    </section>
+
+    <!-- New Password Section -->
+    <section id="newPasswordSection" class="auth-section login" style="display:none;">
+      <h2>Set New Password</h2>
+      <form id="newPasswordForm">
+        <label>New Password:</label>
+        <input type="password" id="newPassword" required>
+        <label>Confirm Password:</label>
+        <input type="password" id="confirmNewPassword" required>
+        <button type="submit" class="btn-gold">Reset Password</button>
+      </form>
+      <p id="newPasswordMessage" class="message"></p>
     </section>
   </div>
 
@@ -80,9 +132,74 @@
       </div>
     </nav>
 
+    <!-- Door Access Check Section -->
+    <section class="door-access" id="doorAccessSection">
+      <h2>🚪 Door Access Check-In</h2>
+      <div class="access-card">
+        <form id="doorAccessForm">
+          <label>Enter Client Name:</label>
+          <input type="text" id="doorClientName" placeholder="Client name" required autofocus>
+          <button type="submit" class="btn-gold">Check Access</button>
+        </form>
+        <div id="doorAccessResult" class="access-result"></div>
+      </div>
+    </section>
+
+    <!-- Attendance Tracking Section -->
+    <section class="attendance-tracking" id="attendanceSection">
+      <h2>📊 Attendance Tracking</h2>
+      <div class="attendance-tabs">
+        <button class="tab-btn active" onclick="switchTab('checkin')">Check-In</button>
+        <button class="tab-btn" onclick="switchTab('attendance')">Attendance Records</button>
+      </div>
+
+      <!-- Check-In Tab -->
+      <div id="checkinTab" class="tab-content">
+        <h3>Quick Check-In</h3>
+        <form id="checkInForm">
+          <label>Client Name:</label>
+          <input type="text" id="checkInClientName" placeholder="Enter client name" required>
+          <button type="submit" class="btn-gold">Check In Client</button>
+        </form>
+        <p id="checkInMessage" class="message"></p>
+      </div>
+
+      <!-- Attendance Records Tab -->
+      <div id="attendanceTab" class="tab-content" style="display:none;">
+        <h3>Today's Attendance</h3>
+        <div class="attendance-summary">
+          <div class="summary-card">
+            <p class="summary-label">Total Check-Ins</p>
+            <p id="totalCheckIns" class="summary-value">0</p>
+          </div>
+          <div class="summary-card">
+            <p class="summary-label">Currently In Gym</p>
+            <p id="currentlyInGym" class="summary-value">0</p>
+          </div>
+          <div class="summary-card">
+            <p class="summary-label">Checked Out</p>
+            <p id="checkedOut" class="summary-value">0</p>
+          </div>
+        </div>
+        <table id="attendanceTable">
+          <thead>
+            <tr>
+              <th>Client Name</th>
+              <th>Check-In Time</th>
+              <th>Check-Out Time</th>
+              <th>Duration</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
     <!-- Clients Section -->
     <section class="clients">
-      <h2>Clients</h2>
+      <h2>👥 Clients</h2>
       <!-- CSV Import -->
       <div class="form-group">
         <input type="file" id="csvFile" accept=".csv">
@@ -136,7 +253,7 @@
 
     <!-- Client Access Check Section -->
     <section class="access-check" id="accessCheckSection" style="display:none;">
-      <h2>Check Client Access</h2>
+      <h2>🔍 Check Client Access</h2>
       <form id="accessCheckForm">
         <label>Client Name:</label>
         <input type="text" id="searchClientName" placeholder="Enter client name" required>
@@ -147,17 +264,12 @@
 
     <!-- Payments Section -->
     <section class="payments">
-      <h2>Payments</h2>
-    </section>
-
-    <!-- Attendance Section -->
-    <section class="attendance">
-      <h2>Attendance</h2>
+      <h2>💳 Payments</h2>
     </section>
 
     <!-- Sales Section -->
     <section class="sales">
-      <h2>Water Sales</h2>
+      <h2>💧 Water Sales</h2>
       <form id="waterForm">
         <label>Type of Water:</label>
         <select id="waterType" required>
@@ -190,7 +302,7 @@
 
     <!-- Inventory Section -->
     <section class="inventory">
-      <h2>Inventory</h2>
+      <h2>📦 Inventory</h2>
       <form id="itemForm">
         <label>Item Name:</label>
         <input type="text" id="itemName" required>
@@ -212,13 +324,13 @@
 
     <!-- Revenue Dashboard (Admin Only) -->
     <section class="revenue-dashboard" id="revenueDashboard" style="display:none;">
-      <h2>Revenue Dashboard</h2>
+      <h2>📈 Revenue Dashboard</h2>
       <canvas id="revenueChart"></canvas>
     </section>
 
     <!-- Reports Section (Admin Only) -->
     <section class="reports" id="reportsSection" style="display:none;">
-      <h2>Reports</h2>
+      <h2>📄 Reports</h2>
     </section>
 
     <script>

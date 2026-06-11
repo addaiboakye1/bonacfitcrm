@@ -1,11 +1,20 @@
 // Staff Database (in localStorage)
 let staffDatabase = JSON.parse(localStorage.getItem('staffDatabase')) || {
-  admin: { password: 'fitness123', role: 'admin', fullName: 'Admin' }
+  admin: { 
+    password: 'fitness123', 
+    role: 'admin', 
+    fullName: 'Admin',
+    email: 'admin@wbft.com',
+    securityQuestion: 'pet',
+    securityAnswer: 'admin123'
+  }
 };
 
 let clientDatabase = JSON.parse(localStorage.getItem('clientDatabase')) || [];
+let attendanceDatabase = JSON.parse(localStorage.getItem('attendanceDatabase')) || [];
 let currentUserRole = null;
 let currentUsername = null;
+let resetUsername = null;
 
 // ==================== AUTH SECTION ====================
 
@@ -20,6 +29,19 @@ document.getElementById('toggleLogin').addEventListener('click', function() {
   document.getElementById('loginSection').style.display = 'block';
 });
 
+// Toggle Password Reset
+document.getElementById('toggleResetPassword').addEventListener('click', function() {
+  document.getElementById('loginSection').style.display = 'none';
+  document.getElementById('resetSection').style.display = 'block';
+});
+
+document.getElementById('toggleLoginFromReset').addEventListener('click', function() {
+  document.getElementById('resetSection').style.display = 'block';
+  document.getElementById('securitySection').style.display = 'none';
+  document.getElementById('newPasswordSection').style.display = 'none';
+  document.getElementById('loginSection').style.display = 'none';
+});
+
 // Login Form
 document.getElementById('loginForm').addEventListener('submit', function(e) {
   e.preventDefault();
@@ -31,7 +53,7 @@ document.getElementById('loginForm').addEventListener('submit', function(e) {
     currentUsername = username;
     document.getElementById('authContainer').style.display = 'none';
     document.querySelector('.crm-content').style.display = 'block';
-    document.getElementById('userDisplay').innerText = `Welcome, ${staffDatabase[username].fullName} (${currentUserRole})`;
+    document.getElementById('userDisplay').innerText = `👤 ${staffDatabase[username].fullName} (${currentUserRole})`;
     setupRolePermissions();
     document.getElementById('loginMessage').innerText = '';
   } else {
@@ -48,6 +70,8 @@ document.getElementById('registerForm').addEventListener('submit', function(e) {
   const username = document.getElementById('regUsername').value;
   const password = document.getElementById('regPassword').value;
   const confirmPassword = document.getElementById('confirmPassword').value;
+  const securityQuestion = document.getElementById('securityQuestion').value;
+  const securityAnswer = document.getElementById('securityAnswer').value;
   const role = document.getElementById('roleSelect').value;
 
   // Validation
@@ -69,12 +93,20 @@ document.getElementById('registerForm').addEventListener('submit', function(e) {
     return;
   }
 
+  if (!securityAnswer.trim()) {
+    document.getElementById('registerMessage').innerText = '❌ Please provide a security answer';
+    document.getElementById('registerMessage').style.color = '#d32f2f';
+    return;
+  }
+
   // Register new staff member
   staffDatabase[username] = {
     password: password,
     role: role,
     fullName: fullName,
     email: email,
+    securityQuestion: securityQuestion,
+    securityAnswer: securityAnswer.toLowerCase(),
     registeredAt: new Date().toISOString()
   };
 
@@ -94,6 +126,85 @@ document.getElementById('registerForm').addEventListener('submit', function(e) {
   }, 2000);
 });
 
+// ==================== PASSWORD RESET ====================
+
+document.getElementById('resetPasswordForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const username = document.getElementById('resetUsername').value;
+  const email = document.getElementById('resetEmail').value;
+
+  if (staffDatabase[username] && staffDatabase[username].email === email) {
+    resetUsername = username;
+    // Show security question
+    const user = staffDatabase[username];
+    const questions = {
+      pet: "What is your pet's name?",
+      city: "What city were you born in?",
+      school: "What was your school name?",
+      color: "What is your favorite color?"
+    };
+    
+    document.getElementById('securityQuestionDisplay').innerText = questions[user.securityQuestion];
+    document.getElementById('resetSection').style.display = 'none';
+    document.getElementById('securitySection').style.display = 'block';
+    document.getElementById('resetMessage').innerText = '';
+  } else {
+    document.getElementById('resetMessage').innerText = '❌ Username and email do not match';
+    document.getElementById('resetMessage').style.color = '#d32f2f';
+  }
+});
+
+// Security Question Verification
+document.getElementById('securityForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const answer = document.getElementById('securityAnswerInput').value.toLowerCase();
+  const user = staffDatabase[resetUsername];
+
+  if (answer === user.securityAnswer) {
+    document.getElementById('securitySection').style.display = 'none';
+    document.getElementById('newPasswordSection').style.display = 'block';
+    document.getElementById('securityMessage').innerText = '';
+  } else {
+    document.getElementById('securityMessage').innerText = '❌ Incorrect answer. Please try again.';
+    document.getElementById('securityMessage').style.color = '#d32f2f';
+  }
+});
+
+// Set New Password
+document.getElementById('newPasswordForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const newPassword = document.getElementById('newPassword').value;
+  const confirmNewPassword = document.getElementById('confirmNewPassword').value;
+
+  if (newPassword !== confirmNewPassword) {
+    document.getElementById('newPasswordMessage').innerText = '❌ Passwords do not match';
+    document.getElementById('newPasswordMessage').style.color = '#d32f2f';
+    return;
+  }
+
+  if (newPassword.length < 6) {
+    document.getElementById('newPasswordMessage').innerText = '❌ Password must be at least 6 characters';
+    document.getElementById('newPasswordMessage').style.color = '#d32f2f';
+    return;
+  }
+
+  // Update password
+  staffDatabase[resetUsername].password = newPassword;
+  localStorage.setItem('staffDatabase', JSON.stringify(staffDatabase));
+
+  document.getElementById('newPasswordMessage').innerText = '✅ Password reset successful! Redirecting to login...';
+  document.getElementById('newPasswordMessage').style.color = '#4caf50';
+
+  // Reset form and go back to login
+  setTimeout(() => {
+    document.getElementById('newPasswordForm').reset();
+    document.getElementById('securitySection').style.display = 'none';
+    document.getElementById('newPasswordSection').style.display = 'none';
+    document.getElementById('loginSection').style.display = 'block';
+    resetUsername = null;
+  }, 2000);
+});
+
 // Logout
 document.getElementById('logoutBtn').addEventListener('click', function() {
   currentUserRole = null;
@@ -102,30 +213,44 @@ document.getElementById('logoutBtn').addEventListener('click', function() {
   document.getElementById('authContainer').style.display = 'block';
   document.getElementById('loginSection').style.display = 'block';
   document.getElementById('registerSection').style.display = 'none';
+  document.getElementById('resetSection').style.display = 'none';
+  document.getElementById('securitySection').style.display = 'none';
+  document.getElementById('newPasswordSection').style.display = 'none';
   document.getElementById('loginForm').reset();
 });
 
 // ==================== ROLE PERMISSIONS ====================
 
 function setupRolePermissions() {
+  // Show door access for staff and admin
+  if (currentUserRole === 'admin' || currentUserRole === 'staff') {
+    document.getElementById('doorAccessSection').style.display = 'block';
+    document.getElementById('attendanceSection').style.display = 'block';
+    document.getElementById('accessCheckSection').style.display = 'block';
+  } else {
+    document.getElementById('doorAccessSection').style.display = 'none';
+    document.getElementById('attendanceSection').style.display = 'none';
+    document.getElementById('accessCheckSection').style.display = 'none';
+  }
+
   // Hide sections based on role
   if (currentUserRole === 'staff') {
     document.getElementById('revenueDashboard').style.display = 'none';
     document.getElementById('reportsSection').style.display = 'none';
     document.querySelector('.sales').style.display = 'block';
-    document.getElementById('accessCheckSection').style.display = 'block';
   } else if (currentUserRole === 'sales') {
     document.querySelector('.clients').style.display = 'none';
     document.querySelector('.attendance').style.display = 'none';
     document.querySelector('.payments').style.display = 'none';
     document.getElementById('revenueDashboard').style.display = 'none';
     document.getElementById('reportsSection').style.display = 'none';
+    document.getElementById('doorAccessSection').style.display = 'none';
+    document.getElementById('attendanceSection').style.display = 'none';
     document.getElementById('accessCheckSection').style.display = 'none';
   } else if (currentUserRole === 'admin') {
     // Admin has access to everything
     document.getElementById('revenueDashboard').style.display = 'block';
     document.getElementById('reportsSection').style.display = 'block';
-    document.getElementById('accessCheckSection').style.display = 'block';
   }
 }
 
@@ -210,7 +335,7 @@ function viewClientDetails(clientId) {
   if (client) {
     alert(`
 📋 CLIENT DETAILS
-━━━━━━━━━━━━━━━━━
+═══════════════════
 Name: ${client.name}
 Phone: ${client.phone}
 Membership: ${client.membership}
@@ -220,6 +345,150 @@ Expiry: ${client.expiryDate}
 Registered By: ${client.registeredBy}
 Status: ${new Date(client.expiryDate) > new Date() ? 'Active' : 'Expired'}
     `);
+  }
+}
+
+// ==================== DOOR ACCESS & ATTENDANCE ====================
+
+// Door Access Check
+document.getElementById('doorAccessForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const searchName = document.getElementById('doorClientName').value.toLowerCase();
+  const foundClient = clientDatabase.find(c => c.name.toLowerCase().includes(searchName));
+
+  const resultDiv = document.getElementById('doorAccessResult');
+
+  if (foundClient) {
+    const isActive = new Date(foundClient.expiryDate) > new Date();
+    const daysLeft = Math.ceil((new Date(foundClient.expiryDate) - new Date()) / (1000 * 60 * 60 * 24));
+
+    if (isActive) {
+      resultDiv.innerHTML = `
+        <div class="access-granted">
+          <h3>✅ ENTRY GRANTED</h3>
+          <p><strong>Name:</strong> ${foundClient.name}</p>
+          <p><strong>Membership:</strong> ${foundClient.membership}</p>
+          <p><strong>Expiry:</strong> ${foundClient.expiryDate}</p>
+          <p><strong>Days Valid:</strong> ${daysLeft} days</p>
+          <p style="font-weight: bold; color: #4caf50;">✓ Welcome to WBFT!</p>
+          <button class="btn-gold" onclick="quickCheckIn('${foundClient.name}')">Check In Now</button>
+        </div>
+      `;
+    } else {
+      resultDiv.innerHTML = `
+        <div class="access-denied">
+          <h3>❌ ENTRY DENIED</h3>
+          <p><strong>Name:</strong> ${foundClient.name}</p>
+          <p><strong>Membership Expired:</strong> ${foundClient.expiryDate}</p>
+          <p style="color: #d32f2f; font-weight: bold;">✗ Membership expired. Please renew.</p>
+        </div>
+      `;
+    }
+  } else {
+    resultDiv.innerHTML = `
+      <div class="access-not-found">
+        <h3>⚠️ CLIENT NOT FOUND</h3>
+        <p>No client found with the name "${document.getElementById('doorClientName').value}"</p>
+      </div>
+    `;
+  }
+});
+
+// Check-In Form
+document.getElementById('checkInForm').addEventListener('submit', function(e) {
+  e.preventDefault();
+  const clientName = document.getElementById('checkInClientName').value;
+  quickCheckIn(clientName);
+});
+
+function quickCheckIn(clientName) {
+  const foundClient = clientDatabase.find(c => c.name.toLowerCase() === clientName.toLowerCase());
+  
+  if (foundClient) {
+    const isActive = new Date(foundClient.expiryDate) > new Date();
+    
+    if (!isActive) {
+      document.getElementById('checkInMessage').innerText = '❌ Cannot check in. Membership expired.';
+      document.getElementById('checkInMessage').style.color = '#d32f2f';
+      return;
+    }
+
+    const now = new Date();
+    const attendanceRecord = {
+      id: Date.now(),
+      clientId: foundClient.id,
+      clientName: foundClient.name,
+      phone: foundClient.phone,
+      checkInTime: now.toLocaleString(),
+      checkOutTime: null,
+      duration: null,
+      date: now.toISOString().split('T')[0]
+    };
+
+    attendanceDatabase.push(attendanceRecord);
+    localStorage.setItem('attendanceDatabase', JSON.stringify(attendanceDatabase));
+
+    document.getElementById('checkInMessage').innerText = `✅ ${foundClient.name} checked in at ${now.toLocaleTimeString()}`;
+    document.getElementById('checkInMessage').style.color = '#4caf50';
+    document.getElementById('checkInForm').reset();
+    displayAttendance();
+  } else {
+    document.getElementById('checkInMessage').innerText = '❌ Client not found';
+    document.getElementById('checkInMessage').style.color = '#d32f2f';
+  }
+}
+
+function displayAttendance() {
+  const tbody = document.querySelector('#attendanceTable tbody');
+  tbody.innerHTML = '';
+
+  const today = new Date().toISOString().split('T')[0];
+  const todayAttendance = attendanceDatabase.filter(a => a.date === today);
+
+  // Summary stats
+  const totalCheckIns = todayAttendance.length;
+  const currentlyIn = todayAttendance.filter(a => !a.checkOutTime).length;
+  const checkedOutCount = todayAttendance.filter(a => a.checkOutTime).length;
+
+  document.getElementById('totalCheckIns').innerText = totalCheckIns;
+  document.getElementById('currentlyInGym').innerText = currentlyIn;
+  document.getElementById('checkedOut').innerText = checkedOutCount;
+
+  todayAttendance.forEach(record => {
+    const status = record.checkOutTime ? '✅ Checked Out' : '🟢 In Gym';
+    const statusClass = record.checkOutTime ? 'status-expired' : 'status-active';
+    
+    const row = document.createElement('tr');
+    row.innerHTML = `
+      <td>${record.clientName}</td>
+      <td>${record.checkInTime}</td>
+      <td>${record.checkOutTime || '-'}</td>
+      <td>${record.duration || '-'}</td>
+      <td><span class="${statusClass}">${status}</span></td>
+      <td>
+        ${!record.checkOutTime ? `<button class="btn-small" onclick="checkOut(${record.id})">Check Out</button>` : '-'}
+      </td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
+function checkOut(attendanceId) {
+  const attendance = attendanceDatabase.find(a => a.id === attendanceId);
+  if (attendance && !attendance.checkOutTime) {
+    const now = new Date();
+    attendance.checkOutTime = now.toLocaleString();
+
+    // Calculate duration
+    const checkIn = new Date(attendance.checkInTime);
+    const diff = (now - checkIn) / (1000 * 60); // in minutes
+    const hours = Math.floor(diff / 60);
+    const minutes = Math.floor(diff % 60);
+    attendance.duration = `${hours}h ${minutes}m`;
+
+    localStorage.setItem('attendanceDatabase', JSON.stringify(attendanceDatabase));
+    displayAttendance();
+    alert(`✅ ${attendance.clientName} checked out. Duration: ${attendance.duration}`);
   }
 }
 
@@ -267,6 +536,25 @@ document.getElementById('accessCheckForm').addEventListener('submit', function(e
   }
 });
 
+// Tab Switching
+function switchTab(tabName) {
+  document.querySelectorAll('.tab-content').forEach(tab => {
+    tab.style.display = 'none';
+  });
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.classList.remove('active');
+  });
+
+  if (tabName === 'checkin') {
+    document.getElementById('checkinTab').style.display = 'block';
+    document.querySelectorAll('.tab-btn')[0].classList.add('active');
+  } else if (tabName === 'attendance') {
+    document.getElementById('attendanceTab').style.display = 'block';
+    document.querySelectorAll('.tab-btn')[1].classList.add('active');
+    displayAttendance();
+  }
+}
+
 // CSV Import
 function importCSV() {
   const file = document.getElementById('csvFile').files[0];
@@ -281,7 +569,7 @@ function importCSV() {
     let importCount = 0;
 
     rows.forEach((row, index) => {
-      if (index === 0 || !row.trim()) return; // Skip header and empty rows
+      if (index === 0 || !row.trim()) return;
       const cols = row.split(',');
       if (cols.length >= 5) {
         const [name, phone, type, amount, payment] = cols.map(c => c.trim());
@@ -370,11 +658,15 @@ function checkExpiryReminders() {
   });
 }
 
-setInterval(checkExpiryReminders, 86400000); // Check daily
+setInterval(checkExpiryReminders, 86400000);
 
-// Load clients on page load
+// Load data on page load
 if (document.readyState === 'loading') {
-  document.addEventListener('DOMContentLoaded', displayClients);
+  document.addEventListener('DOMContentLoaded', function() {
+    displayClients();
+    displayAttendance();
+  });
 } else {
   displayClients();
+  displayAttendance();
 }
