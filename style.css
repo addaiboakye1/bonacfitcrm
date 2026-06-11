@@ -1,21 +1,281 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
 body {
   font-family: 'Lato', sans-serif;
   background: #f9f9f9;
+  color: #333;
 }
+
+/* Header Styles */
+.header {
+  background: #0b3d91;
+  padding: 20px;
+  text-align: center;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+.logo-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+}
+
+.logo {
+  height: 60px;
+  width: auto;
+}
+
+.app-title {
+  font-family: 'Playfair Display', serif;
+  color: #d4af37;
+  font-size: 24px;
+  letter-spacing: 2px;
+  margin: 0;
+}
+
+/* Typography */
 h1, h2 {
   font-family: 'Playfair Display', serif;
   color: #0b3d91;
+  margin-top: 20px;
+  margin-bottom: 15px;
 }
+
+h1 {
+  font-size: 32px;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 2px solid #d4af37;
+  padding-bottom: 10px;
+}
+
+/* Login Section */
+.login {
+  max-width: 400px;
+  margin: 50px auto;
+  padding: 30px;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
+}
+
+.login h2 {
+  text-align: center;
+  color: #0b3d91;
+}
+
+.login form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.login label {
+  font-weight: bold;
+  color: #0b3d91;
+}
+
+.login input {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.login input:focus {
+  outline: none;
+  border-color: #d4af37;
+  box-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
+}
+
+#loginMessage {
+  text-align: center;
+  margin-top: 10px;
+  font-weight: bold;
+  color: #0b3d91;
+}
+
+/* CRM Content */
+.crm-content {
+  max-width: 1200px;
+  margin: 30px auto;
+  padding: 0 20px;
+}
+
+section {
+  background: white;
+  padding: 25px;
+  margin-bottom: 30px;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Forms */
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+label {
+  font-weight: 600;
+  color: #0b3d91;
+  margin-top: 10px;
+}
+
+input, select {
+  padding: 10px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+input:focus, select:focus {
+  outline: none;
+  border-color: #d4af37;
+  box-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
+}
+
+/* Buttons */
 .btn-gold {
   background: #d4af37;
   color: #fff;
   border: none;
-  padding: 10px 20px;
+  padding: 12px 25px;
   border-radius: 5px;
+  font-weight: bold;
+  cursor: pointer;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  align-self: flex-start;
+  margin-top: 10px;
 }
+
+.btn-gold:hover {
+  background: #c9a227;
+  box-shadow: 0 4px 12px rgba(212, 175, 55, 0.3);
+  transform: translateY(-2px);
+}
+
+.btn-gold:active {
+  transform: translateY(0);
+}
+
+/* Tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+  overflow-x: auto;
+}
+
+thead {
+  background: #0b3d91;
+  color: #d4af37;
+}
+
+th {
+  padding: 15px;
+  text-align: left;
+  font-weight: bold;
+}
+
+td {
+  padding: 12px 15px;
+  border-bottom: 1px solid #eee;
+}
+
+tbody tr:hover {
+  background: #f5f5f5;
+}
+
+tbody tr:nth-child(even) {
+  background: #fafafa;
+}
+
+/* Revenue Dashboard */
+#revenueChart {
+  margin-top: 20px;
+}
+
+/* Footer */
 footer {
   text-align: center;
-  padding: 10px;
+  padding: 20px;
   background: #0b3d91;
   color: #fff;
+  font-size: 12px;
+  margin-top: 40px;
+  border-top: 3px solid #d4af37;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .logo-container {
+    flex-direction: column;
+  }
+
+  .app-title {
+    font-size: 18px;
+  }
+
+  h1 {
+    font-size: 24px;
+  }
+
+  h2 {
+    font-size: 18px;
+  }
+
+  section {
+    padding: 15px;
+  }
+
+  table {
+    font-size: 12px;
+  }
+
+  th, td {
+    padding: 8px 10px;
+  }
+}
+
+@media (max-width: 480px) {
+  .header {
+    padding: 10px;
+  }
+
+  .logo {
+    height: 40px;
+  }
+
+  .app-title {
+    font-size: 14px;
+  }
+
+  form {
+    gap: 10px;
+  }
+
+  .btn-gold {
+    width: 100%;
+    padding: 10px 15px;
+  }
+
+  table {
+    font-size: 11px;
+  }
+
+  th, td {
+    padding: 6px 8px;
+  }
 }
