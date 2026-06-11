@@ -25,34 +25,79 @@
     </div>
   </header>
 
-  <!-- Login Section -->
-  <section class="login">
-    <h2>Admin Login</h2>
-    <form id="loginForm">
-      <label>Username:</label>
-      <input type="text" id="username" required>
-      <label>Password:</label>
-      <input type="password" id="password" required>
-      <button type="submit" class="btn-gold">Login</button>
-    </form>
-    <p id="loginMessage"></p>
-  </section>
+  <!-- Auth Container -->
+  <div id="authContainer">
+    <!-- Login Section -->
+    <section id="loginSection" class="auth-section login">
+      <h2>Admin Login</h2>
+      <form id="loginForm">
+        <label>Username:</label>
+        <input type="text" id="loginUsername" required>
+        <label>Password:</label>
+        <input type="password" id="loginPassword" required>
+        <button type="submit" class="btn-gold">Login</button>
+      </form>
+      <p id="loginMessage" class="message"></p>
+      <p class="toggle-auth">Don't have an account? <button type="button" id="toggleRegister" class="link-btn">Register as Staff</button></p>
+    </section>
+
+    <!-- Registration Section -->
+    <section id="registerSection" class="auth-section login" style="display:none;">
+      <h2>Staff Registration</h2>
+      <form id="registerForm">
+        <label>Full Name:</label>
+        <input type="text" id="fullName" required>
+        <label>Email:</label>
+        <input type="email" id="email" required>
+        <label>Username:</label>
+        <input type="text" id="regUsername" required>
+        <label>Password:</label>
+        <input type="password" id="regPassword" required>
+        <label>Confirm Password:</label>
+        <input type="password" id="confirmPassword" required>
+        <label>Role:</label>
+        <select id="roleSelect" required>
+          <option value="">Select Role</option>
+          <option value="staff">Staff Member</option>
+          <option value="sales">Sales Representative</option>
+        </select>
+        <button type="submit" class="btn-gold">Register</button>
+      </form>
+      <p id="registerMessage" class="message"></p>
+      <p class="toggle-auth">Already have an account? <button type="button" id="toggleLogin" class="link-btn">Login</button></p>
+    </section>
+  </div>
 
   <!-- CRM Content (hidden until login) -->
   <div class="crm-content" style="display:none;">
+    <!-- Top Navigation Bar -->
+    <nav class="crm-navbar">
+      <div class="nav-left">
+        <span id="userDisplay" class="user-info"></span>
+      </div>
+      <div class="nav-right">
+        <button id="logoutBtn" class="btn-logout">Logout</button>
+      </div>
+    </nav>
+
     <!-- Clients Section -->
     <section class="clients">
       <h2>Clients</h2>
       <!-- CSV Import -->
-      <input type="file" id="csvFile" accept=".csv">
-      <button onclick="importCSV()">Import Clients</button>
+      <div class="form-group">
+        <input type="file" id="csvFile" accept=".csv">
+        <button onclick="importCSV()" class="btn-gold">Import Clients</button>
+      </div>
 
       <!-- Manual Add -->
       <form id="clientForm">
         <label>Name:</label>
         <input type="text" id="clientName" required>
+        <label>Phone Number:</label>
+        <input type="tel" id="clientPhone" required>
         <label>Membership:</label>
-        <select id="membershipType">
+        <select id="membershipType" required>
+          <option value="">Select Membership Type</option>
           <option value="registration">Registration (500 GH₵)</option>
           <option value="monthly">Monthly Renewal (200 GH₵)</option>
           <option value="3months">3 Months Renewal (500 GH₵)</option>
@@ -60,26 +105,44 @@
           <option value="yearly">Yearly Renewal (2000 GH₵)</option>
         </select>
         <label>Payment Method:</label>
-        <select id="paymentMethod">
+        <select id="paymentMethod" required>
+          <option value="">Select Payment Method</option>
           <option value="momo">MoMo</option>
           <option value="card">Bank Card</option>
         </select>
         <button type="submit" class="btn-gold">Add Client</button>
       </form>
 
-      <!-- Client Table -->
-      <table id="clientTable">
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Membership</th>
-            <th>Amount (GH₵)</th>
-            <th>Payment Method</th>
-            <th>Expiry Date</th>
-          </tr>
-        </thead>
-        <tbody></tbody>
-      </table>
+      <!-- Client Table with Access Check -->
+      <div class="table-container">
+        <h3>Registered Clients</h3>
+        <table id="clientTable">
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Phone</th>
+              <th>Membership</th>
+              <th>Amount (GH₵)</th>
+              <th>Payment Method</th>
+              <th>Expiry Date</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- Client Access Check Section -->
+    <section class="access-check" id="accessCheckSection" style="display:none;">
+      <h2>Check Client Access</h2>
+      <form id="accessCheckForm">
+        <label>Client Name:</label>
+        <input type="text" id="searchClientName" placeholder="Enter client name" required>
+        <button type="submit" class="btn-gold">Check Access</button>
+      </form>
+      <div id="accessResult" class="access-result"></div>
     </section>
 
     <!-- Payments Section -->
@@ -97,13 +160,15 @@
       <h2>Water Sales</h2>
       <form id="waterForm">
         <label>Type of Water:</label>
-        <select id="waterType">
+        <select id="waterType" required>
+          <option value="">Select Water Type</option>
           <option value="small">Small Bottle (3 GH₵)</option>
           <option value="medium">Medium Bottle (5 GH₵)</option>
           <option value="large">Large Bottle (8 GH₵)</option>
         </select>
         <label>Payment Method:</label>
-        <select id="waterPayment">
+        <select id="waterPayment" required>
+          <option value="">Select Payment Method</option>
           <option value="momo">MoMo</option>
           <option value="card">Bank Card</option>
         </select>
@@ -145,14 +210,14 @@
       </table>
     </section>
 
-    <!-- Revenue Dashboard -->
-    <section class="revenue-dashboard">
+    <!-- Revenue Dashboard (Admin Only) -->
+    <section class="revenue-dashboard" id="revenueDashboard" style="display:none;">
       <h2>Revenue Dashboard</h2>
       <canvas id="revenueChart"></canvas>
     </section>
 
-    <!-- Reports Section -->
-    <section class="reports">
+    <!-- Reports Section (Admin Only) -->
+    <section class="reports" id="reportsSection" style="display:none;">
       <h2>Reports</h2>
     </section>
 

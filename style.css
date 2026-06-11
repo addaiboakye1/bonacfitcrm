@@ -56,9 +56,14 @@ h2 {
   padding-bottom: 10px;
 }
 
-/* Login Section */
-.login {
-  max-width: 400px;
+h3 {
+  color: #0b3d91;
+  margin-top: 15px;
+}
+
+/* Auth Section */
+.auth-section {
+  max-width: 450px;
   margin: 50px auto;
   padding: 30px;
   background: white;
@@ -66,47 +71,79 @@ h2 {
   box-shadow: 0 2px 15px rgba(0, 0, 0, 0.1);
 }
 
-.login h2 {
+.auth-section h2 {
   text-align: center;
   color: #0b3d91;
+  margin-bottom: 25px;
 }
 
-.login form {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-}
-
-.login label {
-  font-weight: bold;
-  color: #0b3d91;
-}
-
-.login input {
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+.toggle-auth {
+  text-align: center;
+  margin-top: 20px;
   font-size: 14px;
 }
 
-.login input:focus {
-  outline: none;
-  border-color: #d4af37;
-  box-shadow: 0 0 5px rgba(212, 175, 55, 0.3);
+.link-btn {
+  background: none;
+  border: none;
+  color: #0b3d91;
+  cursor: pointer;
+  text-decoration: underline;
+  font-weight: bold;
+  padding: 0;
 }
 
-#loginMessage {
+.link-btn:hover {
+  color: #d4af37;
+}
+
+/* Message Styles */
+.message {
+  margin-top: 15px;
   text-align: center;
-  margin-top: 10px;
   font-weight: bold;
-  color: #0b3d91;
+  padding: 10px;
+  border-radius: 4px;
+}
+
+/* CRM Navbar */
+.crm-navbar {
+  background: #0b3d91;
+  padding: 15px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+  margin-bottom: 20px;
+}
+
+.user-info {
+  color: #d4af37;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+.btn-logout {
+  background: #d32f2f;
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.btn-logout:hover {
+  background: #b71c1c;
+  transform: scale(1.05);
 }
 
 /* CRM Content */
 .crm-content {
   max-width: 1200px;
-  margin: 30px auto;
-  padding: 0 20px;
+  margin: 0 auto;
+  padding: 0 20px 30px 20px;
 }
 
 section {
@@ -123,6 +160,16 @@ form {
   flex-direction: column;
   gap: 12px;
   margin-bottom: 20px;
+}
+
+.form-group {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 20px;
+}
+
+.form-group input {
+  flex: 1;
 }
 
 label {
@@ -170,12 +217,31 @@ input:focus, select:focus {
   transform: translateY(0);
 }
 
+.btn-small {
+  background: #0b3d91;
+  color: white;
+  border: none;
+  padding: 6px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 12px;
+  transition: all 0.3s ease;
+}
+
+.btn-small:hover {
+  background: #d4af37;
+  color: #0b3d91;
+}
+
 /* Tables */
+.table-container {
+  margin-top: 30px;
+}
+
 table {
   width: 100%;
   border-collapse: collapse;
-  margin-top: 20px;
-  overflow-x: auto;
+  margin-top: 15px;
 }
 
 thead {
@@ -187,6 +253,7 @@ th {
   padding: 15px;
   text-align: left;
   font-weight: bold;
+  border-bottom: 2px solid #d4af37;
 }
 
 td {
@@ -202,9 +269,82 @@ tbody tr:nth-child(even) {
   background: #fafafa;
 }
 
-/* Revenue Dashboard */
-#revenueChart {
-  margin-top: 20px;
+/* Status Badges */
+.status-active {
+  background: #4caf50;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.status-expired {
+  background: #d32f2f;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+/* Access Check Section */
+.access-check {
+  background: linear-gradient(135deg, #0b3d91 0%, #1a5fa0 100%);
+  color: white;
+  padding: 30px;
+}
+
+.access-check h2 {
+  color: #d4af37;
+  border-bottom-color: #d4af37;
+}
+
+.access-check label {
+  color: #d4af37;
+}
+
+.access-check input {
+  padding: 12px;
+  border: 2px solid #d4af37;
+}
+
+.access-check .btn-gold {
+  align-self: center;
+  margin-top: 15px;
+}
+
+.access-result {
+  margin-top: 30px;
+  padding: 20px;
+  border-radius: 8px;
+  background: white;
+  color: #333;
+}
+
+.access-granted {
+  border-left: 5px solid #4caf50;
+  background: #f1f8f4;
+}
+
+.access-denied {
+  border-left: 5px solid #d32f2f;
+  background: #fdf1f1;
+}
+
+.access-not-found {
+  border-left: 5px solid #ff9800;
+  background: #fff3e0;
+}
+
+.access-result h3 {
+  margin-top: 0;
+  margin-bottom: 15px;
+}
+
+.access-result p {
+  margin: 10px 0;
+  line-height: 1.6;
 }
 
 /* Footer */
@@ -228,6 +368,12 @@ footer {
     font-size: 18px;
   }
 
+  .crm-navbar {
+    flex-direction: column;
+    gap: 10px;
+    text-align: center;
+  }
+
   h1 {
     font-size: 24px;
   }
@@ -246,6 +392,10 @@ footer {
 
   th, td {
     padding: 8px 10px;
+  }
+
+  .form-group {
+    flex-direction: column;
   }
 }
 
@@ -269,6 +419,7 @@ footer {
   .btn-gold {
     width: 100%;
     padding: 10px 15px;
+    align-self: stretch;
   }
 
   table {
@@ -277,5 +428,9 @@ footer {
 
   th, td {
     padding: 6px 8px;
+  }
+
+  .access-check {
+    padding: 15px;
   }
 }
